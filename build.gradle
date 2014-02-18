@@ -1,0 +1,134 @@
+apply plugin: 'java'    // http://www.gradle.org/docs/current/userguide/java_plugin.html
+apply plugin: 'eclipse' // http://www.gradle.org/docs/current/userguide/eclipse_plugin.html
+apply plugin: 'idea'    // http://www.gradle.org/docs/current/userguide/idea_plugin.html
+apply plugin: 'pmd'    // http://www.gradle.org/docs/current/userguide/pmd_plugin.html
+apply plugin: 'jacoco'  // http://www.gradle.org/docs/current/userguide/jacoco_plugin.html
+apply plugin: 'build-dashboard' // http://www.gradle.org/docs/current/userguide/buildDashboard_plugin.html
+apply plugin: 'findbugs'// http://www.gradle.org/docs/current/userguide/findbugs_plugin.html
+apply plugin: 'checkstyle'  // http://www.gradle.org/docs/current/userguide/checkstyle_plugin.html
+apply plugin: 'pitest'  // https://github.com/szpak/gradle-pitest-plugin
+apply plugin: 'fatjar'      // https://github.com/musketyr/gradle-fatjar-plugin
+apply plugin: 'application'
+
+sourceCompatability = 1.7
+targetCompatability = 1.7
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:0.30.1'
+        classpath "org.pitest:pitest:0.30"
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'http://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+dependencies {
+    compile 'com.google.guava:guava:15.0'
+    compile 'com.codahale.dropwizard:dropwizard-assets:0.7.0-SNAPSHOT'  // Easy serving of static assets
+    compile 'com.codahale.dropwizard:dropwizard-core:0.7.0-SNAPSHOT'
+    compile 'com.codahale.dropwizard:dropwizard-client:0.7.0-SNAPSHOT'
+    compile 'com.codahale.dropwizard:dropwizard-auth:0.7.0-SNAPSHOT'
+    compile 'com.codahale.dropwizard:dropwizard-testing:0.7.0-SNAPSHOT'    // Simple testing
+    compile 'com.codahale.dropwizard:dropwizard-hibernate:0.7.0-SNAPSHOT'  // Connection to RDBMS
+    compile 'com.codahale.dropwizard:dropwizard-db:0.7.0-SNAPSHOT' // DB support
+    compile 'com.codahale.dropwizard:dropwizard-jdbi:0.7.0-SNAPSHOT' // JDBI support
+    compile 'com.codahale.dropwizard:dropwizard-migrations:0.7.0-SNAPSHOT' // Database changes
+    compile 'org.testng:testng:6.8.7'
+    compile 'org.postgresql:postgresql:9.3-1100-jdbc41' // PostgreSQL JDBC driver
+
+    compile group: 'redis.clients', name: 'jedis', version: '2.1.+'
+
+    // Jackson Guava - replace once version 2.2.3 or higher is released
+    compile fileTree(dir: 'libs', include: '*.jar')
+
+    testCompile 'com.google.guava:guava-testlib:15.0'
+}
+
+mainClassName = 'edu.msoe.tutorial.process.ProcessTutorialApplication'
+
+run {
+    args 'server', 'ProcessTutorial.yml'
+}
+
+test {
+
+    useTestNG() {
+        useDefaultListeners = true
+        excludeGroups 'broken'
+    }
+}
+
+pitest {
+    targetClasses = ['edu.msoe.tutorial.process.*']
+    outputFormats = ['HTML']    // Can also have XML
+    enableDefaultIncrementalAnalysis = true
+}
+
+jacocoTestReport{
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+//Configure FindBugs
+findbugs.ignoreFailures = true
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = !xml.enabled // Can only have 1 report type
+    }
+}
+// Configure CheckStyle
+checkstyleTest.enabled = true
+checkstyleMain.enabled = true
+checkstyle.ignoreFailures = true
+def checkstyleConfigDir = new File(buildscript.sourceFile.parentFile, 'config/checkstyle')
+
+checkstyle {
+    configFile = new File(checkstyleConfigDir, "checkstyle.xml")
+    configProperties.checkstyleConfigDir = checkstyleConfigDir
+}
+
+// Configure PMD plugin
+pmd.ignoreFailures = true
+tasks.withType(Pmd) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
+fatJar {
+
+    exclude 'META-INF/MANIFEST.MF'
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+
+    manifest {
+        attributes 'Main-Class': 'edu.msoe.tutorial.process.ProcessTutorialApplication'
+    }
+}
+
+task migrate(type: JavaExec) {
+    args 'db', 'migrate', '-i', 'prod', 'ProcessTutorial.yml'
+    main = mainClassName
+    classpath = project.sourceSets.main.runtimeClasspath
+}
+
+task testData(type: JavaExec) {
+    args 'db', 'migrate', '-i', 'test', 'ProcessTutorial.yml'
+    main = mainClassName
+    classpath = project.sourceSets.main.runtimeClasspath
+}

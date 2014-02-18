@@ -1,0 +1,79 @@
+server:
+
+  type: simple
+  connector:
+    type: http   # alternatives are http
+    port: 80080     # alternatives are 8080
+  applicationContextPath: /
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO #DEBUG
+
+  # Logger-specific levels.
+  loggers:
+
+    # Sets the level for 'com.example.app' to DEBUG.
+    edu.msoe.avtracker: DEBUG
+
+  appenders:
+    - type: console
+    - type: syslog
+      threshold: INFO
+      host: localhost
+      port: 514
+      facility: local0 # default https://github.com/codahale/dropwizard/blob/master/dropwizard-logging/src/main/java/com/codahale/dropwizard/logging/SyslogAppenderFactory.java
+    - type: file
+      currentLogFilename: ./logs/dropwizard.log
+      archivedLogFilenamePattern: ./logs/dropwizard-%d.log.gz
+      archivedFileCount: 7
+
+# Database settings
+database:
+
+  # the name of the JDBC driver
+  driverClass: org.postgresql.Driver
+
+  # the username
+  user: se3800
+
+  # the password
+  password: v738T4*2anoco82r3
+
+  # the JDBC URL
+  url: jdbc:postgresql://localhost/se3800
+
+  # any properties specific to your JDBC driver:
+  properties:
+    charSet: UTF-8
+
+  # the maximum amount of time to wait on an empty pool before throwing an exception
+  maxWaitForConnection: 1s
+
+  # the SQL query to run when validating a connection's liveness
+  validationQuery: "/* MyService Health Check */ SELECT 1"
+
+  # the minimum number of connections to keep open
+  minSize: 8
+
+  # the maximum number of connections to keep open
+  maxSize: 32
+
+  # whether or not idle connections should be validated
+  checkConnectionWhileIdle: true
+
+# Redis cache settings
+cacheConfig:
+
+  # The host address of the Redis Server
+  address: "127.0.0.1"
+
+  port: 6379
+
+  # Size of cache
+  cacheSize: 1000
+
+  # Session existence duration (seconds)
+  sessionExpiration: 86400 # 24 hours
