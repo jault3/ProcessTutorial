@@ -3,7 +3,7 @@ server:
   type: simple
   connector:
     type: http   # alternatives are http
-    port: 80080     # alternatives are 8080
+    port: 8080     # alternatives are 8080
   applicationContextPath: /
 
 # Logging settings.
