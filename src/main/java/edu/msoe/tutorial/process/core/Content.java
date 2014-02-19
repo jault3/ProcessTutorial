@@ -25,7 +25,7 @@ public class Content {
     private String video;
 
     @JsonProperty
-    @Min(1)
+    @Min(0)
     @Max(5)
     private int rating;
 
