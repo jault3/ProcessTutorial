@@ -46,7 +46,7 @@ public class UserResource {
             String hashedPassword = DigestUtils.sha256Hex(salt+password);
             user.setPassword(hashedPassword);
 
-            userDao.create(user);
+            userDao.create(user.getEmail(), user.getPassword(), user.getSalt(), user.getRole().toString());
         } else {
             String sentPasswordHashed = DigestUtils.sha256Hex(existingUser.getSalt()+user.getPassword());
             if (!sentPasswordHashed.equals(existingUser.getPassword())) {
@@ -86,7 +86,7 @@ public class UserResource {
         if (user.getEmail() != null) {
             ResponseException.formatAndThrow(Response.Status.BAD_REQUEST, "You cannot update a user's email");
         }
-        userDao.update(existingUser);
+        userDao.update(existingUser.getEmail(), existingUser.getPassword(), existingUser.getSalt(), existingUser.getRole().toString());
 
         return existingUser;
     }

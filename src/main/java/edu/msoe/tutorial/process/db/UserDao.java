@@ -11,15 +11,15 @@ import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 @RegisterMapper(UserMapper.class)
 public interface UserDao {
 
-    @SqlUpdate("insert into user (email, password, salt, role) values (:email, :password, :salt, :role)")
-    public void create(@BindBean User user);
+    @SqlUpdate("insert into pt_user (email, password, salt, role) values (:email, :password, :salt, :role)")
+    public void create(@Bind("email") String email, @Bind("password") String password, @Bind("salt") String salt, @Bind("role") String role);
 
-    @SqlQuery("select email, password, salt, role from user where email = :email")
+    @SqlQuery("select email, password, salt, role from pt_user where email = :email")
     public User retrieve(@Bind("email") String email);
 
-    @SqlUpdate("update user set password = :password, salt = :salt, role = :role where email = :email")
-    public void update(@BindBean User user);
+    @SqlUpdate("update pt_user set password = :password, salt = :salt, role = :role where email = :email")
+    public void update(@Bind("email") String email, @Bind("password") String password, @Bind("salt") String salt, @Bind("role") String role);
 
-    @SqlUpdate("delete from user where email = :email")
+    @SqlUpdate("delete from pt_user where email = :email")
     public void delete(@BindBean User user);
 }

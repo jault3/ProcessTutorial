@@ -17,7 +17,7 @@ public interface ContentDao {
     public void create(@BindBean Content content);
 
     @SqlQuery("select id, title, description, video from content where id = :id")
-    public Content retrieve(@Bind("email") String email);
+    public Content retrieve(@Bind("id") String id);
 
     @SqlQuery("select id, title, description, video from content")
     public Set<Content> retrieveAll();

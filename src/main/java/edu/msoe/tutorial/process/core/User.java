@@ -2,6 +2,8 @@ package edu.msoe.tutorial.process.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.Objects;
@@ -77,5 +79,10 @@ public class User {
                 Objects.equals(password, that.password) &&
                 Objects.equals(salt, that.salt) &&
                 Objects.equals(role, that.role);
+    }
+
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
     }
 }
