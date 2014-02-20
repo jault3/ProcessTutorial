@@ -96,7 +96,7 @@ public class ProcessTutorialApplication extends Application<ProcessTutorialConfi
          * Add Resources
          */
         environment.jersey().register(new HealthCheckResource());
-        environment.jersey().register(new UserResource(userDao, sessionDao));
+        environment.jersey().register(new UserResource(userDao, sessionDao, ratingDao));
         environment.jersey().register(new ContentResource(contentDao, ratingDao));
         environment.jersey().register(new RatingResource(contentDao, ratingDao));
 
