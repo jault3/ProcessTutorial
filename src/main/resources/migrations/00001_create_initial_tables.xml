@@ -33,4 +33,11 @@
             <column name="rating" type="integer"/>
         </createTable>
     </changeSet>
+
+    <changeSet id="2" author="ault" context="prod,test">
+        <renameColumn tableName="ratings" oldColumnName="user" newColumnName="pt_user"/>
+
+        <addForeignKeyConstraint baseTableName="ratings" baseColumnNames="pt_user" constraintName="ratings_pt_user" referencedTableName="pt_user" referencedColumnNames="email"/>
+        <addForeignKeyConstraint baseTableName="ratings" baseColumnNames="content" constraintName="ratings_content" referencedTableName="content" referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>
