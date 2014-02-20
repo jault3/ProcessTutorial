@@ -40,4 +40,8 @@
         <addForeignKeyConstraint baseTableName="ratings" baseColumnNames="pt_user" constraintName="ratings_pt_user" referencedTableName="pt_user" referencedColumnNames="email"/>
         <addForeignKeyConstraint baseTableName="ratings" baseColumnNames="content" constraintName="ratings_content" referencedTableName="content" referencedColumnNames="id"/>
     </changeSet>
+
+    <changeSet id="3" author="ault" context="prod,test">
+        <renameColumn tableName="ratings" oldColumnName="pt_user" newColumnName="ptUser"/>
+    </changeSet>
 </databaseChangeLog>
