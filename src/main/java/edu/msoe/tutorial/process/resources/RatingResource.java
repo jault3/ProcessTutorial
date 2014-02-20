@@ -4,6 +4,7 @@ import com.codahale.dropwizard.hibernate.UnitOfWork;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
 import edu.msoe.tutorial.process.auth.Authorized;
+import edu.msoe.tutorial.process.core.Content;
 import edu.msoe.tutorial.process.core.Rating;
 import edu.msoe.tutorial.process.core.User;
 import edu.msoe.tutorial.process.db.ContentDao;
@@ -32,7 +33,7 @@ public class RatingResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public Rating post(@PathParam("contentId") String contentId, @Authorized User user, @Valid Rating rating) {
+    public Content post(@PathParam("contentId") String contentId, @Authorized User user, @Valid Rating rating) {
         if (contentDao.retrieve(contentId) == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + contentId + " was not found");
         }
@@ -45,14 +46,14 @@ public class RatingResource {
             rating.setUser(user.getEmail());
             ratingDao.create(rating);
         }
-        return rating;
+        return contentDao.retrieve(contentId);
     }
 
     @PUT
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public Rating put(@PathParam("contentId") String contentId, @Authorized User user, Rating rating) {
+    public Content put(@PathParam("contentId") String contentId, @Authorized User user, Rating rating) {
         if (contentDao.retrieve(contentId) == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + contentId + " was not found");
         }
@@ -62,7 +63,7 @@ public class RatingResource {
         }
         existingRating.setRating(rating.getRating());
         ratingDao.update(existingRating);
-        return existingRating;
+        return contentDao.retrieve(contentId);
     }
 
     @GET

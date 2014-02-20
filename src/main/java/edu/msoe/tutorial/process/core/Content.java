@@ -27,7 +27,7 @@ public class Content {
     @JsonProperty
     @Min(0)
     @Max(5)
-    private int rating;
+    private double rating;
 
     public Content() { }
 
@@ -63,11 +63,11 @@ public class Content {
         this.video = video;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 
