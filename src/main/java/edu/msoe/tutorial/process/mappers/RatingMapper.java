@@ -11,7 +11,7 @@ public class RatingMapper implements ResultSetMapper<Rating> {
 
     public Rating map(int index, ResultSet r, StatementContext ctx) throws SQLException {
         Rating rating = new Rating();
-        rating.setUser(r.getString("ptUser"));
+        rating.setUser(r.getString("ptuser"));
         rating.setContent(r.getString("content"));
         rating.setRating(r.getInt("rating"));
         return rating;

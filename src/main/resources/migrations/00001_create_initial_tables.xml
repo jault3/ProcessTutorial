@@ -44,4 +44,8 @@
     <changeSet id="3" author="ault" context="prod,test">
         <renameColumn tableName="ratings" oldColumnName="pt_user" newColumnName="ptUser"/>
     </changeSet>
+
+    <changeSet id="4" author="ault" context="prod,test">
+        <renameColumn tableName="ratings" oldColumnName="ptUser" newColumnName="ptuser"/>
+    </changeSet>
 </databaseChangeLog>
