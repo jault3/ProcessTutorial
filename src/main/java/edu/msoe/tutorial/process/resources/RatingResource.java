@@ -36,6 +36,9 @@ public class RatingResource {
         if (contentDao.retrieve(contentId) == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + contentId + " was not found");
         }
+        if (ratingDao.retrieve(user.getEmail(), contentId) != null) {
+            ResponseException.formatAndThrow(Response.Status.BAD_REQUEST, "You have already rated this content");
+        }
         rating.setContent(contentId);
         rating.setUser(user.getEmail());
         ratingDao.create(rating);
