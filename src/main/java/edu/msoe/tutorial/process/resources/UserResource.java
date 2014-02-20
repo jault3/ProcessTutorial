@@ -51,9 +51,7 @@ public class UserResource {
             String hashedPassword = DigestUtils.sha256Hex(salt+password);
             user.setPassword(hashedPassword);
 
-            if (user.getRole() == null) {
-                user.setRole(UserRole.VIEWER);
-            }
+            user.setRole(UserRole.VIEWER);
 
             userDao.create(user.getEmail(), user.getPassword(), user.getSalt(), user.getRole().toString());
         } else {

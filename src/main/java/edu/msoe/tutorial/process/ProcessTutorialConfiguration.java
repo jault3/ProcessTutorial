@@ -5,6 +5,7 @@ import com.codahale.dropwizard.db.DataSourceFactory;
 import com.codahale.dropwizard.server.SimpleServerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.msoe.tutorial.process.config.CacheConfiguration;
+import edu.msoe.tutorial.process.config.ShutdownConfiguration;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -38,6 +39,14 @@ public class ProcessTutorialConfiguration extends Configuration {
     private CacheConfiguration cacheConfig = new CacheConfiguration();
 
     /**
+     * Container for the shutdown configuration.
+     */
+    @Valid
+    @NotNull
+    @JsonProperty
+    private ShutdownConfiguration shutdownConfiguration = new ShutdownConfiguration();
+
+    /**
      * @return the container with the database information
      */
     @JsonProperty("database")
@@ -51,5 +60,13 @@ public class ProcessTutorialConfiguration extends Configuration {
     @JsonProperty("cacheConfig")
     public CacheConfiguration getCacheConfiguration() {
         return cacheConfig;
+    }
+
+    /**
+     * @return the container with the shutdown config information
+     */
+    @JsonProperty("shutdown")
+    public ShutdownConfiguration getShutdownConfiguration() {
+        return shutdownConfiguration;
     }
 }

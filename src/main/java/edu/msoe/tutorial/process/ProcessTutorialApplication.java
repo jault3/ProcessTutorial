@@ -16,10 +16,7 @@ import edu.msoe.tutorial.process.db.RatingDao;
 import edu.msoe.tutorial.process.db.SessionDao;
 import edu.msoe.tutorial.process.db.UserDao;
 import edu.msoe.tutorial.process.filter.CatchAllRequestFilter;
-import edu.msoe.tutorial.process.resources.ContentResource;
-import edu.msoe.tutorial.process.resources.HealthCheckResource;
-import edu.msoe.tutorial.process.resources.RatingResource;
-import edu.msoe.tutorial.process.resources.UserResource;
+import edu.msoe.tutorial.process.resources.*;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.skife.jdbi.v2.DBI;
 import redis.clients.jedis.Jedis;
@@ -99,6 +96,8 @@ public class ProcessTutorialApplication extends Application<ProcessTutorialConfi
         environment.jersey().register(new UserResource(userDao, sessionDao, ratingDao));
         environment.jersey().register(new ContentResource(contentDao, ratingDao));
         environment.jersey().register(new RatingResource(contentDao, ratingDao));
+        environment.jersey().register(new UserManagementResource(userDao, ratingDao));
+        environment.jersey().register(new ShutdownResource(configuration.getShutdownConfiguration().getPassword()));
 
         /*
          * Add Providers

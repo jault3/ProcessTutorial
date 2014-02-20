@@ -77,3 +77,6 @@ cacheConfig:
 
   # Session existence duration (seconds)
   sessionExpiration: 86400 # 24 hours
+
+shutdown:
+  password: ptShutdown
