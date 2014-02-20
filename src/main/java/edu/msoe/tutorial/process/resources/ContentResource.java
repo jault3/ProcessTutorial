@@ -34,7 +34,7 @@ public class ContentResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public Content post(@Valid Content content, @Authorized User user) {
+    public Content post(@Valid Content content, @Authorized(admin = true) User user) {
         content.setId(UUID.randomUUID().toString());
         contentDao.create(content);
 
@@ -46,7 +46,7 @@ public class ContentResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public Content put(@Authorized User user, @PathParam("id") String id, Content content) {
+    public Content put(@Authorized(admin = true) User user, @PathParam("id") String id, Content content) {
         Content existingContent = contentDao.retrieve(id);
         if (existingContent == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + id + " does not exist");
@@ -84,7 +84,7 @@ public class ContentResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public void delete(@PathParam("id") String id) {
+    public void delete(@Authorized(admin = true) User user, @PathParam("id") String id) {
         Content existingContent = contentDao.retrieve(id);
         if (existingContent == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + id + " does not exist");

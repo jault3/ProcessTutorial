@@ -12,6 +12,7 @@ import com.sun.jersey.spi.inject.Injectable;
 import com.sun.jersey.spi.inject.InjectableProvider;
 import edu.msoe.tutorial.process.core.Session;
 import edu.msoe.tutorial.process.core.User;
+import edu.msoe.tutorial.process.core.UserRole;
 import edu.msoe.tutorial.process.db.SessionDao;
 import edu.msoe.tutorial.process.db.UserDao;
 import edu.msoe.tutorial.process.exception.ResponseException;
@@ -46,7 +47,7 @@ public class AuthorizedProvider implements InjectableProvider<Authorized, Parame
      */
     @Override
     public Injectable<User> getInjectable(ComponentContext ic, Authorized annotation, Parameter c) {
-        return new AuthorizedInjectable(userDao, sessionDao);
+        return new AuthorizedInjectable(userDao, sessionDao, annotation.admin());
     }
 
     /**
@@ -57,10 +58,12 @@ public class AuthorizedProvider implements InjectableProvider<Authorized, Parame
 
         private final UserDao userDao;
         private final SessionDao sessionDao;
+        private final boolean admin;
 
-        private AuthorizedInjectable(UserDao userDao, SessionDao sessionDao) {
+        private AuthorizedInjectable(UserDao userDao, SessionDao sessionDao, boolean admin) {
             this.userDao = userDao;
             this.sessionDao = sessionDao;
+            this.admin = admin;
         }
 
         /**
@@ -86,6 +89,10 @@ public class AuthorizedProvider implements InjectableProvider<Authorized, Parame
             // If we need a user and dont have one, throw an exception
             if (user == null) {
                 ResponseException.formatAndThrow(Response.Status.UNAUTHORIZED, "You must be logged in to view this resource");
+            }
+
+            if (admin && !user.getRole().equals(UserRole.ADMIN)) {
+                ResponseException.formatAndThrow(Response.Status.UNAUTHORIZED, "You must be an admin to perform this action");
             }
 
             return user;
