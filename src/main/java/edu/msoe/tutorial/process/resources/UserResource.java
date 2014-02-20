@@ -3,9 +3,11 @@ package edu.msoe.tutorial.process.resources;
 import com.codahale.dropwizard.hibernate.UnitOfWork;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
+import edu.msoe.tutorial.process.auth.Authorized;
 import edu.msoe.tutorial.process.core.Session;
 import edu.msoe.tutorial.process.core.User;
 import edu.msoe.tutorial.process.core.UserRole;
+import edu.msoe.tutorial.process.db.RatingDao;
 import edu.msoe.tutorial.process.db.SessionDao;
 import edu.msoe.tutorial.process.db.UserDao;
 import edu.msoe.tutorial.process.exception.ResponseException;
@@ -25,10 +27,12 @@ public class UserResource {
 
     private final UserDao userDao;
     private final SessionDao sessionDao;
+    private final RatingDao ratingDao;
 
-    public UserResource(UserDao userDao, SessionDao sessionDao) {
+    public UserResource(UserDao userDao, SessionDao sessionDao, RatingDao ratingDao) {
         this.userDao = userDao;
         this.sessionDao = sessionDao;
+        this.ratingDao = ratingDao;
     }
 
     @POST
@@ -66,15 +70,10 @@ public class UserResource {
     }
 
     @PUT
-    @Path("/{email}")
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public User put(@PathParam("email") String email, User user) {
-        User existingUser = userDao.retrieve(email);
-        if (existingUser == null) {
-            ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "User with email " + email + " does not exist");
-        }
+    public User put(@Authorized User existingUser, User user) {
         if (user.getPassword() != null) {
             Random r = new SecureRandom();
             byte[] saltBytes = new byte[32];
@@ -97,30 +96,23 @@ public class UserResource {
     }
 
     @GET
-    @Path("/{email}")
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public User get(@PathParam("email") String email) {
-        User existingUser = userDao.retrieve(email);
-        if (existingUser == null) {
-            ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "User with email " + email + " does not exist");
-        }
-
+    public User get(@Authorized User existingUser) {
         return existingUser;
     }
 
     @DELETE
-    @Path("/{email}")
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public void delete(@PathParam("email") String email) {
-        User existingUser = userDao.retrieve(email);
-        if (existingUser == null) {
-            ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "User with email " + email + " does not exist");
-        }
+    public void delete(@Authorized User existingUser, @HeaderParam("Authorization") String sessionToken) {
+        ratingDao.deleteAllByUser(existingUser.getEmail());
         userDao.delete(existingUser);
+        Session session = new Session(sessionToken);
+        session.setEmail(existingUser.getEmail());
+        sessionDao.deleteSession(session);
     }
 
     @OPTIONS
@@ -128,11 +120,4 @@ public class UserResource {
     @UnitOfWork
     @ExceptionMetered
     public void options() { }
-
-    @OPTIONS
-    @Path("/{email}")
-    @Timed
-    @UnitOfWork
-    @ExceptionMetered
-    public void optionsWithEmail() { }
 }

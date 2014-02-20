@@ -24,5 +24,8 @@ public interface RatingDao {
     public void delete(@BindBean Rating rating);
 
     @SqlUpdate("delete from ratings where content = :content")
-    public void deleteAll(@Bind("content") String contentId);
+    public void deleteAllByContent(@Bind("content") String contentId);
+
+    @SqlUpdate("delete from ratings where ptuser = :user")
+    public void deleteAllByUser(@Bind("user") String user);
 }
