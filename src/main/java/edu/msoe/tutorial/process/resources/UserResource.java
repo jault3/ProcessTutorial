@@ -5,6 +5,7 @@ import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
 import edu.msoe.tutorial.process.core.Session;
 import edu.msoe.tutorial.process.core.User;
+import edu.msoe.tutorial.process.core.UserRole;
 import edu.msoe.tutorial.process.db.SessionDao;
 import edu.msoe.tutorial.process.db.UserDao;
 import edu.msoe.tutorial.process.exception.ResponseException;
@@ -45,6 +46,10 @@ public class UserResource {
             String password = user.getPassword();
             String hashedPassword = DigestUtils.sha256Hex(salt+password);
             user.setPassword(hashedPassword);
+
+            if (user.getRole() == null) {
+                user.setRole(UserRole.VIEWER);
+            }
 
             userDao.create(user.getEmail(), user.getPassword(), user.getSalt(), user.getRole().toString());
         } else {
