@@ -25,6 +25,6 @@ public interface UserDao {
     @SqlUpdate("delete from pt_user where email = :email")
     public void delete(@BindBean User user);
 
-    @SqlQuery("select email, password, salt, role from pt_user limit :limit, offset :offset")
+    @SqlQuery("select email, password, salt, role from pt_user limit :limit offset :offset")
     public Set<User> list(@Bind("limit") int limit, @Bind("offset") int offset);
 }

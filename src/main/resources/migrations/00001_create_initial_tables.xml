@@ -32,6 +32,10 @@
             </column>
             <column name="rating" type="integer"/>
         </createTable>
+
+        <sql>
+            insert into pt_user (email, password, salt, role) values ('admin', '8fe76618922867caa2c5ee4eb76795188034fc35aa066c97358412387945bcbe', 'a4fab1c86b4bf511e73778950f78174de0bba4de634a415ad5da5962637bcc8f', 'ADMIN');
+        </sql>
     </changeSet>
 
     <changeSet id="2" author="ault" context="prod,test">
