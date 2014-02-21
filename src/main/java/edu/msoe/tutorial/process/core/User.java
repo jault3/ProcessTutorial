@@ -2,6 +2,8 @@ package edu.msoe.tutorial.process.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -84,5 +86,12 @@ public class User {
     @Override
     public String toString() {
         return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
+    }
+
+    public ObjectNode toJson() {
+        ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
+        objectNode.put("email", email);
+        objectNode.put("role", role.getRole());
+        return objectNode;
     }
 }

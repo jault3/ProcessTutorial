@@ -3,6 +3,8 @@ package edu.msoe.tutorial.process.resources;
 import com.codahale.dropwizard.hibernate.UnitOfWork;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.msoe.tutorial.process.auth.Authorized;
 import edu.msoe.tutorial.process.core.Session;
 import edu.msoe.tutorial.process.core.User;
@@ -39,7 +41,7 @@ public class UserResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public Session post(@Valid User user) {
+    public JsonNode post(@Valid User user) {
         User existingUser = userDao.retrieve(user.getEmail());
         if (existingUser == null) {
             Random r = new SecureRandom();
@@ -63,8 +65,9 @@ public class UserResource {
         }
 
         Session session = sessionDao.createSession(user.getEmail());
-
-        return session;
+        ObjectNode object = user.toJson();
+        object.put("session", session.getSession());
+        return object;
     }
 
     @PUT
