@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.Set;
 
 @Path("/user")
 @Produces(MediaType.APPLICATION_JSON)
@@ -102,6 +103,18 @@ public class UserResource {
     @ExceptionMetered
     public User get(@Authorized User existingUser) {
         return existingUser;
+    }
+
+    @GET
+    @Path("/list")
+    @Timed
+    @UnitOfWork
+    @ExceptionMetered
+    public Set<User> list(@Authorized User existingUser, @DefaultValue("1") @QueryParam("pageNum") int pageNum, @DefaultValue("20") @QueryParam("pageSize") int pageSize) {
+        if (!existingUser.getRole().equals(UserRole.ADMIN)) {
+            ResponseException.formatAndThrow(Response.Status.UNAUTHORIZED, "You must be an admin to list all users");
+        }
+        return userDao.list(pageSize, ((pageNum-1)*pageSize));
     }
 
     @DELETE

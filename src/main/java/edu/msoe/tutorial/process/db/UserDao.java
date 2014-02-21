@@ -8,6 +8,8 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapper;
 
+import java.util.Set;
+
 @RegisterMapper(UserMapper.class)
 public interface UserDao {
 
@@ -22,4 +24,7 @@ public interface UserDao {
 
     @SqlUpdate("delete from pt_user where email = :email")
     public void delete(@BindBean User user);
+
+    @SqlQuery("select email, password, salt, role from pt_user limit :limit, offset :offset")
+    public Set<User> list(@Bind("limit") int limit, @Bind("offset") int offset);
 }
