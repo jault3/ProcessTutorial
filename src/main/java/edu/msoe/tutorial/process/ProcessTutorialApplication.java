@@ -98,6 +98,7 @@ public class ProcessTutorialApplication extends Application<ProcessTutorialConfi
         environment.jersey().register(new RatingResource(contentDao, ratingDao));
         environment.jersey().register(new UserManagementResource(userDao, ratingDao));
         environment.jersey().register(new ShutdownResource(configuration.getShutdownConfiguration().getPassword()));
+        environment.jersey().register(new ListUsersResource(userDao));
 
         /*
          * Add Providers
