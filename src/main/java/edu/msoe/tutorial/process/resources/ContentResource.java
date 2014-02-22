@@ -89,8 +89,8 @@ public class ContentResource {
         if (existingContent == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + id + " does not exist");
         }
-        contentDao.delete(existingContent);
         ratingDao.deleteAllByContent(id);
+        contentDao.delete(existingContent);
     }
 
     @GET
