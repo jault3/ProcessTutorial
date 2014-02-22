@@ -84,13 +84,14 @@ public class ContentResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public void delete(@Authorized(admin = true) User user, @PathParam("id") String id) {
+    public String delete(@Authorized(admin = true) User user, @PathParam("id") String id) {
         Content existingContent = contentDao.retrieve(id);
         if (existingContent == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Content with id " + id + " does not exist");
         }
         ratingDao.deleteAllByContent(id);
         contentDao.delete(existingContent);
+        return "{}";
     }
 
     @GET

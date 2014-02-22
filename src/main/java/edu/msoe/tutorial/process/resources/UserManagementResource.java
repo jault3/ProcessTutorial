@@ -66,7 +66,7 @@ public class UserManagementResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public void delete(@PathParam("email") String email, @Authorized(admin = true) User existingUser, @HeaderParam("Authorization") String sessionToken) {
+    public String delete(@PathParam("email") String email, @Authorized(admin = true) User existingUser, @HeaderParam("Authorization") String sessionToken) {
         User userInQuestion = userDao.retrieve(email);
         if (userInQuestion == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "User with email " + email + " does not exist");
@@ -74,6 +74,7 @@ public class UserManagementResource {
 
         ratingDao.deleteAllByUser(userInQuestion.getEmail());
         userDao.delete(userInQuestion);
+        return "{}";
     }
 
     @OPTIONS

@@ -60,9 +60,13 @@ public class RatingResource {
         Rating existingRating = ratingDao.retrieve(user.getEmail(), contentId);
         if (existingRating == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Rating for content with id " + contentId + " by " + user.getEmail() + " does not exist");
+            rating.setContent(contentId);
+            rating.setUser(user.getEmail());
+            ratingDao.create(rating);
+        } else {
+            existingRating.setRating(rating.getRating());
+            ratingDao.update(existingRating);
         }
-        existingRating.setRating(rating.getRating());
-        ratingDao.update(existingRating);
         return contentDao.retrieve(contentId);
     }
 
@@ -76,7 +80,10 @@ public class RatingResource {
         }
         Rating rating = ratingDao.retrieve(user.getEmail(), contentId);
         if (rating == null) {
-            ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "Rating for content with id " + contentId + " by " + user.getEmail() + " does not exist");
+            rating = new Rating();
+            rating.setRating(0);
+            rating.setContent(contentId);
+            rating.setUser(user.getEmail());
         }
         return rating;
     }

@@ -109,12 +109,13 @@ public class UserResource {
     @Timed
     @UnitOfWork
     @ExceptionMetered
-    public void delete(@Authorized User existingUser, @HeaderParam("Authorization") String sessionToken) {
+    public String delete(@Authorized User existingUser, @HeaderParam("Authorization") String sessionToken) {
         ratingDao.deleteAllByUser(existingUser.getEmail());
         userDao.delete(existingUser);
         Session session = new Session(sessionToken);
         session.setEmail(existingUser.getEmail());
         sessionDao.deleteSession(session);
+        return "{}";
     }
 
     @OPTIONS
