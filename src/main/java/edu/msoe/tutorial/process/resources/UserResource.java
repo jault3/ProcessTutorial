@@ -68,7 +68,7 @@ public class UserResource {
         }
 
         Session session = sessionDao.createSession(user.getEmail());
-        ObjectNode object = Jackson.newObjectMapper().convertValue(user, ObjectNode.class);
+        ObjectNode object = (ObjectNode)Jackson.newObjectMapper().convertValue(user, JsonNode.class);
         object.put("session", session.getSession());
         return object;
     }
