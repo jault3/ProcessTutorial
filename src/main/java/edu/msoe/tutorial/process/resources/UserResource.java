@@ -1,9 +1,11 @@
 package edu.msoe.tutorial.process.resources;
 
 import com.codahale.dropwizard.hibernate.UnitOfWork;
+import com.codahale.dropwizard.jackson.Jackson;
 import com.codahale.metrics.annotation.ExceptionMetered;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import edu.msoe.tutorial.process.auth.Authorized;
 import edu.msoe.tutorial.process.core.Session;
@@ -66,7 +68,7 @@ public class UserResource {
         }
 
         Session session = sessionDao.createSession(user.getEmail());
-        ObjectNode object = user.toJson();
+        ObjectNode object = Jackson.newObjectMapper().convertValue(user, ObjectNode.class);
         object.put("session", session.getSession());
         return object;
     }

@@ -1,6 +1,6 @@
 {
     "email":"test@test.com",
     "password":"test123",
-    "role":"ADMIN",
+    "role":0.5,
     "salt":"salt"
 }

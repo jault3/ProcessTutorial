@@ -5,6 +5,7 @@ import java.io.IOException;
 import com.google.common.collect.Sets;
 import com.google.common.net.HttpHeaders;
 import com.sun.jersey.api.client.WebResource;
+import edu.msoe.tutorial.process.auth.AuthorizedProvider;
 
 /**
  * PURPOSE
@@ -12,14 +13,11 @@ import com.sun.jersey.api.client.WebResource;
  *  Specifically, this class provides all the setup needed for doing an authorized web request to
  *  Catalyze.
  *
- * @author Dagnon
+ * @author ault
  */
 public abstract class TestJerseyWrapper extends TestNGResourceTest {
 
-    /**
-     * This is used to create objects from .json files.
-     */
-    protected FixtureTest jsonHelper = new FixtureTest();
+    public AuthorizedProvider _authorizedProvider;
 
     public TestJerseyWrapper() throws IOException {
 
@@ -35,8 +33,8 @@ public abstract class TestJerseyWrapper extends TestNGResourceTest {
      *                          (WATCH OUT for the Mac's smart-quotes auto-replacing!)
      */
     public void setupJersey() throws IOException {
-
-        this.singletons = Sets.newHashSet(); // TODO DELETE THIS LINE AFTER we correct the framework
+        _authorizedProvider = new AuthorizedProvider(_userDao, _sessionDao);
+        this.addProvider(_authorizedProvider);
     }
 
     /**
@@ -51,14 +49,12 @@ public abstract class TestJerseyWrapper extends TestNGResourceTest {
      * @return
      */
     public WebResource.Builder readyToSend(WebResource.Builder bldr) {
-        return bldr.header(HttpHeaders.CONTENT_TYPE, "application/json");
+        return bldr.header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.AUTHORIZATION, sessionToken);
     }
 
     public WebResource.Builder readyToSend(WebResource wr) {
-        return wr.header(HttpHeaders.CONTENT_TYPE, "application/json");
+        return wr.header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header(HttpHeaders.AUTHORIZATION, sessionToken);
     }
-    public FixtureTest getJsonHelper() {
-        return jsonHelper;
-    }
-
 }

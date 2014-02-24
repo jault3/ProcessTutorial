@@ -1,6 +1,8 @@
 package edu.msoe.tutorial.process.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -64,5 +66,10 @@ public class Rating {
         return Objects.equals(user, that.user) &&
                 Objects.equals(content, that.content) &&
                 Objects.equals(rating, that.rating);
+    }
+
+    @Override
+    public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
     }
 }

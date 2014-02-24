@@ -68,8 +68,8 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof User)) {
-            return false;
+        if (o == this) {
+            return true;
         }
         if (o == null || !(o instanceof User)) {
             return false;
@@ -86,12 +86,5 @@ public class User {
     @Override
     public String toString() {
         return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).toString();
-    }
-
-    public ObjectNode toJson() {
-        ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
-        objectNode.put("email", email);
-        objectNode.put("role", role.getRole());
-        return objectNode;
     }
 }
