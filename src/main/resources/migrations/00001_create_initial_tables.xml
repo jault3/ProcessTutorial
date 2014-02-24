@@ -52,4 +52,8 @@
     <changeSet id="4" author="ault" context="prod,test">
         <renameColumn tableName="ratings" oldColumnName="ptUser" newColumnName="ptuser"/>
     </changeSet>
+    
+    <changeSet id="5" author="ault">
+        <modifyDataType tableName="content" columnName="description" newDataType="varchar(10000)"/>
+    </changeSet>
 </databaseChangeLog>
