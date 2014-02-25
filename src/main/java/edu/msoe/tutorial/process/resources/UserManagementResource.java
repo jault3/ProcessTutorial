@@ -67,6 +67,9 @@ public class UserManagementResource {
     @UnitOfWork
     @ExceptionMetered
     public String delete(@PathParam("email") String email, @Authorized(admin = true) User existingUser, @HeaderParam("Authorization") String sessionToken) {
+        if (email.equals("admin")) {
+            ResponseException.formatAndThrow(Response.Status.BAD_REQUEST, "You cannot delete the admin user");
+        }
         User userInQuestion = userDao.retrieve(email);
         if (userInQuestion == null) {
             ResponseException.formatAndThrow(Response.Status.NOT_FOUND, "User with email " + email + " does not exist");
