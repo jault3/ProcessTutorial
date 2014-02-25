@@ -112,6 +112,9 @@ public class UserResource {
     @UnitOfWork
     @ExceptionMetered
     public String delete(@Authorized User existingUser, @HeaderParam("Authorization") String sessionToken) {
+        if (existingUser.getEmail().equals("admin")) {
+            ResponseException.formatAndThrow(Response.Status.BAD_REQUEST, "You cannot delete the admin user");
+        }
         ratingDao.deleteAllByUser(existingUser.getEmail());
         userDao.delete(existingUser);
         Session session = new Session(sessionToken);
