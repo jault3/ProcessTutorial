@@ -5,15 +5,15 @@ SE3800 Final Project
 
 Requirements
 ------------
-Redis
-Postgres
+Redis (clone the git repository and 'nohup /<path>/<to>/<redis>/src/redis-server &')
+Postgres (version 9.3 was used for the project although earlier version will likely work)
 Java 7
 
 Instructions (for Linux/Mac)
 ----------------------------
 * Clone this repository
 * Make sure redis is running
-* Make sure postgres is running (a user named 'se3800' and password 'v738T4*2anoco82r3' is required)
+* Make sure postgres is running (a schema named 'se3800' and a user named 'se3800' and password 'v738T4*2anoco82r3' is required)
 * Open terminal and navigate the to root of the project
 * Run './gradlew fatJar' which compiles the project into one big jar file
 * Run './gradlew migrate' which will setup your database tables
@@ -29,4 +29,6 @@ Instructions (for Linux/Mac)
 
 Notes
 ------
-The server runs on port 8080, so you can either modify you IP tables to forward all traffic on port 80 of your machine to port 8080 so it will reach the server, or just modify your base urls in the web project to go to port 8080, which is the default for the web frontend.
+* The server runs on port 8080, so you can either modify you IP tables to forward all traffic on port 80 of your machine to port 8080 so it will reach the server, or just modify your base urls in the web project to go to port 8080, which is the default for the web frontend.
+* Most server configurations are in the ProcessTutorial.yml file. Open this in a text editor to see the port the server runs on, the database user and password, etc.
+* If you want to see if the server is running, you can do a get to the health check route, 'curl http://localhost:8080/healthcheck' and it should respond with a 'status OK'.
